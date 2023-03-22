@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Add data from Form 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/mongo-crud.html");
+  res.sendFile(__dirname + "/index.html");
 });
 
  app.post("/addProduct", async (req, res) => {
@@ -37,7 +37,10 @@ app.get("/", (req, res) => {
     await client.close();
   }
 });
-  
+
+app.get("/products", (req, res) => {
+	res.send("here is products");
+});
 
 /* // Add data directly into database 
 async function run() {

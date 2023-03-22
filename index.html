@@ -3,12 +3,27 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>Mongo Crud Form</title>
+		<style type="text/css" media="all">
+			form {
+				padding: 20px; 
+				background: cyan; 
+				line-height: 50px; 
+				text-align: center;
+				color: violet;
+			}
+			input, button {
+				padding: 5px 10px;
+			}
+		</style>
 	</head>
 	<body>
 	   <form action="/addProduct" method="post" accept-charset="utf-8">
 	   	<input type="text" name="name" id="name" placeholder="name" />
+	   	<br />
 	   	<input type="number" name="price" id="price" placeholder="price" />
+	   	<br />
 	   	<input type="number" name="quantity" id="quantity" placeholder="quantity" />
+	   	<br />
 	   	<button type="submit">Add</button>
 	   </form>
 	</body>
