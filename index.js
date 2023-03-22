@@ -38,9 +38,23 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/products", (req, res) => {
-	res.send("here is products");
+// Get data from database
+app.get("/products", async (req, res) => {
+  try {
+  	await client.connect();
+    const collection = client.db("mongo-crud-data").collection("products");
+    
+   const cursor = collection.find();
+   const products = await cursor.toArray();
+   res.send(products);
+  } catch(error) {
+  	console.log("Error:",error.code);
+  } finally {
+    await client.close();
+  }
 });
+
+
 
 /* // Add data directly into database 
 async function run() {
