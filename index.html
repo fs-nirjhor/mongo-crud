@@ -1,105 +1,128 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Mongo Crud Form</title>
-		<style type="text/css" media="all">
-			body {
-				padding: 20px; 
-				background: cyan; 
-				line-height: 3; 
-				text-align: center;
-			}
-			input, button {
-				padding: 5px 10px;
-				letter-spacing: 5px;
-				font-size: xx-large;
-				background-color: lightcyan;
-				border-radius: 5px;
-			}
-			.container {
-       	color: darkviolet;
-				background-color: yellow;
-				font-size: xx-large;
-				padding: 5px 20px;
-			}
-		</style>
-	</head>
-	<body>
-	   <form action="/addProduct" method="post" accept-charset="utf-8">
-	   	<input type="text" name="name" id="name" placeholder="name" />
-	   	<br />
-	   	<input type="number" name="price" id="price" placeholder="price" />
-	   	<br />
-	   	<input type="number" name="quantity" id="quantity" placeholder="quantity" />
-	   	<br />
-	   	<button type="submit" class="add-btn">Add</button>
-	   	<br />
-	   </form>
-	   <div class="container">
-	   <h2><a href="/products">All Products</a></h2>	
-	   <ol id="list"></ol>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Mongo Crud Form</title>
+    <style type="text/css" media="all">
+      body {
+        padding: 20px;
+        background: cyan;
+        line-height: 3;
+        text-align: center;
+      }
+      input,
+      button {
+        padding: 5px 10px;
+        letter-spacing: 5px;
+        font-size: xx-large;
+        background-color: lightcyan;
+        border-radius: 5px;
+      }
+      .container {
+        color: darkviolet;
+        background-color: yellow;
+        font-size: xx-large;
+        padding: 5px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/addProduct" method="post" accept-charset="utf-8">
+      <input type="text" name="name" id="name" placeholder="name" />
+      <br />
+      <input type="number" name="price" id="price" placeholder="price" />
+      <br />
+      <input
+        type="number"
+        name="quantity"
+        id="quantity"
+        placeholder="quantity"
+      />
+      <br />
+      <button type="submit" class="add-btn">Add</button>
+      <br />
+    </form>
+    <div class="container">
+      <h2><a href="/products">All Products</a></h2>
+      <ol id="list"></ol>
       <div id="updateForm"></div>
-	   </div>
-	   
-	   <script type="text/javascript" charset="utf-8">
-	   // All products 
-	   	fetch(`/products`)
-	   	.then(res => res.json())
-	   	.then(data => {
-	   			const list = document.getElementById('list');
-	   		data.forEach(product => {
-	   			const li = document.createElement('li');
-	   			li.innerHTML = `<strong>${product.name}</strong> -- price: ${product.price}, quantity: ${product.quantity}  
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+      // All products
+      fetch(`/products`)
+        .then((res) => res.json())
+        .then((data) => {
+          const list = document.getElementById("list");
+          data.forEach((product) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${product.name}</strong> -- price: ${product.price}, quantity: ${product.quantity}  
 	   			<button onclick="loadProduct('${product._id}')">Update</button>
 	   			<button onclick="deleteProduct('${product._id}')">Delete</button>`;
-	   			list.appendChild(li);
-	   		})
-	   	})
-	   	.catch(error => console.log(error.message));
-	   	//Delete 
-	   	const deleteProduct = id => {
-	   		fetch(`/deleteProduct/${id}`, {
-	   			method : "DELETE"
-	   		})
-	   		.then(res => res.json())
-	   		.then(data => {
-	   			console.log(data);
-	   		})
-	   		.catch(error => console.log(error.message));
-	   	}
-	   	// update 
-	   	const loadProduct = (id) => {
-	   		fetch(`products/${id}`)
-	   		.then(res => res.json())
-	   		.then(data => {
-	   			 const updateForm = document.getElementById('updateForm');
-	   			 updateForm.innerHTML = `
+            list.appendChild(li);
+          });
+        })
+        .catch((error) => console.log(error.message));
+      //Delete
+      const deleteProduct = (id) => {
+        fetch(`/deleteProduct/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => console.log(error.message));
+      };
+      // update
+      const loadProduct = (id) => {
+        fetch(`products/${id}`)
+          .then((res) => res.json())
+          .then((data) => {
+            const updateForm = document.getElementById("updateForm");
+            updateForm.innerHTML = `
 	   			 <h3>Update ${data.name}</h3>
-	   			 <input type="number" name="price"  id="updatePrice" placeholder="New Price"/> <br />
-	   			 <input type="number" name="quantity" id="updateQuantity" placeholder="New Quantity"/> <br />
+	   			 <input type="number" value="${data.price}" name="price"  id="updatePrice" placeholder="New Price"/> <br />
+	   			 <input type="number" name="quantity" value="${data.quantity}" id="updateQuantity" placeholder="New Quantity"/> <br />
 	   			 <button onclick="updateProduct('${data._id}')">Update</button>
 	   			 `;
-	   		})
-	   		.catch(error => console.log(error.message));
-	   	};
-	   	const updateProduct = (id) => {
-	   		console.log(id);
-	   	};
-	   </script>
-	   
-	    <!-- script for Eruda Tools (START)-->
-  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
-  <script>eruda.init();</script>
-  <script>
-  ;(function () {
-    var src = '//cdn.jsdelivr.net/npm/eruda';
-    if (!/eruda=true/.test(window.location) && localStorage.getItem('active-eruda') != 'true') return;
-    document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
-    document.write('<scr' + 'ipt>eruda.init();</scr' + 'ipt>');
-  })();
-  </script>
-  <!-- script for Eruda Tools (END)-->
-  
-	</body>
+          })
+          .catch((error) => console.log(error.message));
+      };
+      const updateProduct = (id) => {
+        const price = document.getElementById("updatePrice").value;
+        const quantity = document.getElementById("updateQuantity").value;
+        const product = { id, price, quantity };
+        fetch(`/update/${id}`, {
+          method: "PATCH",
+          body: JSON.stringify(product),
+          headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+          .then((res) => res.json())
+          .then((data) => {
+          	console.log(data);
+          })
+          .catch((error) => console.log(error.message));
+      };
+    </script>
+
+    <!-- script for Eruda Tools (START)-->
+    <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      eruda.init();
+    </script>
+    <script>
+      (function () {
+        var src = "//cdn.jsdelivr.net/npm/eruda";
+        if (
+          !/eruda=true/.test(window.location) &&
+          localStorage.getItem("active-eruda") != "true"
+        )
+          return;
+        document.write("<scr" + 'ipt src="' + src + '"></scr' + "ipt>");
+        document.write("<scr" + "ipt>eruda.init();</scr" + "ipt>");
+      })();
+    </script>
+    <!-- script for Eruda Tools (END)-->
+  </body>
 </html>

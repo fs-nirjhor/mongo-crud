@@ -91,9 +91,30 @@ app.delete("/deleteProduct/:id", async (req, res) => {
     await client.close();
   }
 });
+// Update Single Data
+app.patch("/update/:id", async (req, res) => {
+	try {
+  	await client.connect();
+    const collection = client.db("mongo-crud-data").collection("products");
+   	const filter = {_id: new ObjectId(req.params.id)};
+    const updateDoc = {
+      $set: {
+        price: req.body.price, 
+        quantity: req.body.quantity
+      }
+    };
+    const result = await collection.updateOne(filter, updateDoc);
+    console.log(result);
+    res.send(result);
+  } catch(error) {
+  	console.log("Error:",error.code);
+  } finally {
+    await client.close();
+  }
+});
 
-
-/* // Add data directly into database 
+/* 
+// Add data directly into database 
 async function run() {
   try {
     const collection = client.db("mongo-crud-data").collection("products");
