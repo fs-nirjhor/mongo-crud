@@ -76,9 +76,9 @@
 	   			 const updateForm = document.getElementById('updateForm');
 	   			 updateForm.innerHTML = `
 	   			 <h3>Update ${data.name}</h3>
-	   			 <input type="number" name="price" value="${data.price}" /> <br />
-	   			 <input type="number" name="quantity" value="${data.quantity}" /> <br />
-	   			 <button onclick="updateProduct('${data._id}')">Update Now</button>
+	   			 <input type="number" name="price"  id="updatePrice" placeholder="New Price"/> <br />
+	   			 <input type="number" name="quantity" id="updateQuantity" placeholder="New Quantity"/> <br />
+	   			 <button onclick="updateProduct('${data._id}')">Update</button>
 	   			 `;
 	   		})
 	   		.catch(error => console.log(error.message));
