@@ -4,20 +4,25 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>Mongo Crud Form</title>
 		<style type="text/css" media="all">
-			form {
+			body {
 				padding: 20px; 
 				background: cyan; 
-				line-height: 50px; 
+				line-height: 3; 
 				text-align: center;
-				color: violet;
-				font-size: x-large;
 			}
-			input, button, a {
+			input, button {
 				padding: 5px 10px;
 				letter-spacing: 5px;
-				text-decoration: none;
+				font-size: xx-large;
+				background-color: lightcyan;
+				border-radius: 5px;
 			}
-
+			.list {
+       	color: darkviolet;
+				background-color: yellow;
+				font-size: xx-large;
+				padding: 5px 20px;
+			}
 		</style>
 	</head>
 	<body>
@@ -28,9 +33,62 @@
 	   	<br />
 	   	<input type="number" name="quantity" id="quantity" placeholder="quantity" />
 	   	<br />
-	   	<button type="submit">Add</button>
+	   	<button type="submit" class="add-btn">Add</button>
 	   	<br />
-	   	<a href="/products">Products</a>
 	   </form>
+	   <div class="list">
+	   <h2><a href="/products">All Products</a></h2>	
+	   <ol id="container"></ol>
+	   </div>
+	   <script type="text/javascript" charset="utf-8">
+	   // All products 
+	   	fetch(`/products`)
+	   	.then(res => res.json())
+	   	.then(data => {
+	   			const container = document.getElementById('container');
+	   		data.forEach(product => {
+	   			const li = document.createElement('li');
+	   			li.innerHTML = `<strong>${product.name}</strong> -- price: ${product.price}, quantity: ${product.quantity}  
+	   			<button onclick="loadProduct('${product._id}')">Update</button>
+	   			<button onclick="deleteProduct('${product._id}')">Delete</button>`;
+	   			container.appendChild(li);
+	   		})
+	   	})
+	   	.catch(error => console.log(error.message));
+	   	//Delete 
+	   	const deleteProduct = id => {
+	   		fetch(`/deleteProduct/${id}`, {
+	   			method : "DELETE"
+	   		})
+	   		.then(res => res.json())
+	   		.then(data => {
+	   			console.log(data);
+	   		})
+	   		.catch(error => console.log(error.message));
+	   	}
+	   	// update 
+	   	const loadProduct = (id) => {
+	   		fetch(`products/${id}`)
+	   		.then(res => res.json())
+	   		.then(data => {
+	   			console.log(data);
+	   		})
+	   		.catch(error => console.log(error.message));
+	   	};
+	   </script>
+	   
+	    <!-- script for Eruda Tools (START)-->
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init();</script>
+  <script>
+  ;(function () {
+    var src = '//cdn.jsdelivr.net/npm/eruda';
+    if (!/eruda=true/.test(window.location) && localStorage.getItem('active-eruda') != 'true') return;
+    document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
+    document.write('<scr' + 'ipt>eruda.init();</scr' + 'ipt>');
+  })();
+  </script>
+  <!-- script for Eruda Tools (END)-->
+  
 	</body>
 </html>

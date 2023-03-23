@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const port = 3000;
 const password = "KXUE2O0QxiWIb3QD";
@@ -18,11 +18,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Add data from Form 
+// Set Html Page 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+// Add Data  
  app.post("/addProduct", async (req, res) => {
   try {
   	await client.connect();
@@ -38,7 +39,7 @@ app.get("/", (req, res) => {
   }
 });
 
-// Get data from database
+// Get All Data 
 app.get("/products", async (req, res) => {
   try {
   	await client.connect();
@@ -54,6 +55,42 @@ app.get("/products", async (req, res) => {
   }
 });
 
+//Get Single Data 
+app.get("/products/:id", async (req, res) => {
+	try {
+  	await client.connect();
+    const collection = client.db("mongo-crud-data").collection("products");
+    
+   const cursor = collection.find({_id: new ObjectId(req.params.id)});
+   const products = await cursor.toArray();
+   res.send(products[0]);
+  } catch(error) {
+  	console.log("Error:",error.code);
+  } finally {
+    await client.close();
+  }
+});
+
+// Delete Data 
+app.delete("/deleteProduct/:id", async (req, res) => {
+  try {
+    await client.connect();
+    // database and collection code goes here
+    const db = client.db("mongo-crud-data");
+    const coll = db.collection("products");
+    // delete code goes here
+    const doc = {
+      _id: new ObjectId(req.params.id)
+      };
+    const result = await coll.deleteOne(doc);
+    console.log(result);
+    res.send(result);
+  } catch(error) {
+  	console.log("Error:",error.code);
+  } finally {
+    await client.close();
+  }
+});
 
 
 /* // Add data directly into database 
@@ -70,6 +107,5 @@ async function run() {
 }
 run().catch(console.dir);
 */
-
 
 app.listen(port);
