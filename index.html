@@ -17,7 +17,7 @@
 				background-color: lightcyan;
 				border-radius: 5px;
 			}
-			.list {
+			.container {
        	color: darkviolet;
 				background-color: yellow;
 				font-size: xx-large;
@@ -36,22 +36,24 @@
 	   	<button type="submit" class="add-btn">Add</button>
 	   	<br />
 	   </form>
-	   <div class="list">
+	   <div class="container">
 	   <h2><a href="/products">All Products</a></h2>	
-	   <ol id="container"></ol>
+	   <ol id="list"></ol>
+      <div id="updateForm"></div>
 	   </div>
+	   
 	   <script type="text/javascript" charset="utf-8">
 	   // All products 
 	   	fetch(`/products`)
 	   	.then(res => res.json())
 	   	.then(data => {
-	   			const container = document.getElementById('container');
+	   			const list = document.getElementById('list');
 	   		data.forEach(product => {
 	   			const li = document.createElement('li');
 	   			li.innerHTML = `<strong>${product.name}</strong> -- price: ${product.price}, quantity: ${product.quantity}  
 	   			<button onclick="loadProduct('${product._id}')">Update</button>
 	   			<button onclick="deleteProduct('${product._id}')">Delete</button>`;
-	   			container.appendChild(li);
+	   			list.appendChild(li);
 	   		})
 	   	})
 	   	.catch(error => console.log(error.message));
@@ -71,9 +73,18 @@
 	   		fetch(`products/${id}`)
 	   		.then(res => res.json())
 	   		.then(data => {
-	   			console.log(data);
+	   			 const updateForm = document.getElementById('updateForm');
+	   			 updateForm.innerHTML = `
+	   			 <h3>Update ${data.name}</h3>
+	   			 <input type="number" name="price" value="${data.price}" /> <br />
+	   			 <input type="number" name="quantity" value="${data.quantity}" /> <br />
+	   			 <button onclick="updateProduct('${data._id}')">Update Now</button>
+	   			 `;
 	   		})
 	   		.catch(error => console.log(error.message));
+	   	};
+	   	const updateProduct = (id) => {
+	   		console.log(id);
 	   	};
 	   </script>
 	   
