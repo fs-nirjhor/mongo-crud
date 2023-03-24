@@ -55,6 +55,7 @@
         .then((res) => res.json())
         .then((data) => {
           const list = document.getElementById("list");
+          list.innerHTML = "";
           data.forEach((product) => {
             const li = document.createElement("li");
             li.innerHTML = `<strong>${product.name}</strong> -- price: ${product.price}, quantity: ${product.quantity}  
@@ -106,7 +107,10 @@
         })
           .then((res) => res.json())
           .then((data) => {
-          	console.log(data);
+          	if (data.modifiedCount) {
+          		loadAllProducts();
+          		document.getElementById("updateForm").innerHTML = "" ;
+          	}
           })
           .catch((error) => console.log(error.message));
       };
