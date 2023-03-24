@@ -59,7 +59,7 @@
             const li = document.createElement("li");
             li.innerHTML = `<strong>${product.name}</strong> -- price: ${product.price}, quantity: ${product.quantity}  
 	   			<button onclick="loadProduct('${product._id}')">Update</button>
-	   			<button onclick="deleteProduct('${product._id}')">Delete</button>`;
+	   			<button onclick="deleteProduct(event ,'${product._id}')">Delete</button>`;
             list.appendChild(li);
           });
         })
@@ -67,13 +67,16 @@
         };
         loadAllProducts();
       //Delete
-      const deleteProduct = (id) => {
+      const deleteProduct = (event ,id) => {
         fetch(`/deleteProduct/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data.deletedCount);
+          	if(data.deletedCount) {
+          		event.target.parentNode.style.display = "none" ;
+          	}
+            console.log(data);
           })
           .catch((error) => console.log(error.message));
       };
