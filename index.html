@@ -50,6 +50,7 @@
 
     <script type="text/javascript" charset="utf-8">
       // All products
+        const loadAllProducts = () => {
       fetch(`/products`)
         .then((res) => res.json())
         .then((data) => {
@@ -63,6 +64,8 @@
           });
         })
         .catch((error) => console.log(error.message));
+        };
+        loadAllProducts();
       //Delete
       const deleteProduct = (id) => {
         fetch(`/deleteProduct/${id}`, {
@@ -70,7 +73,7 @@
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            console.log(data.deletedCount);
           })
           .catch((error) => console.log(error.message));
       };

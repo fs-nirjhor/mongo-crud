@@ -33,7 +33,7 @@ async function run() {
       const product = req.body;
       const result = await collection.insertOne(product);
       console.log(product);
-      res.send(product);
+      res.redirect("/");
     });
     // Get All Data
     app.get("/products", async (req, res) => {
