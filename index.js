@@ -18,115 +18,63 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Set Html Page 
+// Set Html Page
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-// Add Data  
- app.post("/addProduct", async (req, res) => {
-  try {
-  	await client.connect();
-    const collection = client.db("mongo-crud-data").collection("products");
-   	const product = req.body ;
-    const result = await collection.insertOne(product);
-      console.log(product);
-      res.send(product);
-  } catch(error) {
-  	console.log("Error:",error.code);
-  } finally {
-    await client.close();
-  }
-});
-
-// Get All Data 
-app.get("/products", async (req, res) => {
-  try {
-  	await client.connect();
-    const collection = client.db("mongo-crud-data").collection("products");
-    
-   const cursor = collection.find();
-   const products = await cursor.toArray();
-   res.send(products);
-  } catch(error) {
-  	console.log("Error:",error.code);
-  } finally {
-    await client.close();
-  }
-});
-
-//Get Single Data 
-app.get("/products/:id", async (req, res) => {
-	try {
-  	await client.connect();
-    const collection = client.db("mongo-crud-data").collection("products");
-    
-   const cursor = collection.find({_id: new ObjectId(req.params.id)});
-   const products = await cursor.toArray();
-   res.send(products[0]);
-  } catch(error) {
-  	console.log("Error:",error.code);
-  } finally {
-    await client.close();
-  }
-});
-
-// Delete Data 
-app.delete("/deleteProduct/:id", async (req, res) => {
-  try {
-    await client.connect();
-    // database and collection code goes here
-    const db = client.db("mongo-crud-data");
-    const coll = db.collection("products");
-    // delete code goes here
-    const doc = {
-      _id: new ObjectId(req.params.id)
-      };
-    const result = await coll.deleteOne(doc);
-    console.log(result);
-    res.send(result);
-  } catch(error) {
-  	console.log("Error:",error.code);
-  } finally {
-    await client.close();
-  }
-});
-// Update Single Data
-app.patch("/update/:id", async (req, res) => {
-	try {
-  	await client.connect();
-    const collection = client.db("mongo-crud-data").collection("products");
-   	const filter = {_id: new ObjectId(req.params.id)};
-    const updateDoc = {
-      $set: {
-        price: req.body.price, 
-        quantity: req.body.quantity
-      }
-    };
-    const result = await collection.updateOne(filter, updateDoc);
-    console.log(result);
-    res.send(result);
-  } catch(error) {
-  	console.log("Error:",error.code);
-  } finally {
-    await client.close();
-  }
-});
-
-/* 
-// Add data directly into database 
+// MongoDB
 async function run() {
   try {
+    client.connect();
     const collection = client.db("mongo-crud-data").collection("products");
-    // create a document to insert
-    const product = {name: "potol", price: 30, quantity: 7};
-    const result = await collection.insertOne(product);
-    console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    // Add Data
+    app.post("/addProduct", async (req, res) => {
+      const product = req.body;
+      const result = await collection.insertOne(product);
+      console.log(product);
+      res.send(product);
+    });
+    // Get All Data
+    app.get("/products", async (req, res) => {
+      const cursor = collection.find();
+      const products = await cursor.toArray();
+      res.send(products);
+    });
+    //Get Single Data
+    app.get("/products/:id", async (req, res) => {
+      const cursor = collection.find({ _id: new ObjectId(req.params.id) });
+      const products = await cursor.toArray();
+      res.send(products[0]);
+    });
+    // Delete Data
+    app.delete("/deleteProduct/:id", async (req, res) => {
+      const doc = {
+        _id: new ObjectId(req.params.id),
+      };
+      const result = await collection.deleteOne(doc);
+      console.log(result);
+      res.send(result);
+    });
+    // Update Single Data
+    app.patch("/update/:id", async (req, res) => {
+      const filter = { _id: new ObjectId(req.params.id) };
+      const updateDoc = {
+        $set: {
+          price: req.body.price,
+          quantity: req.body.quantity,
+        },
+      };
+      const result = await collection.updateOne(filter, updateDoc);
+      console.log(result);
+      res.send(result);
+    });
   } finally {
     await client.close();
   }
 }
 run().catch(console.dir);
-*/
 
-app.listen(port);
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
